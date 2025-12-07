@@ -29,14 +29,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
-      - name: Install selenium-standalone
-        run: |
-          npm install -g selenium-standalone
-          selenium-standalone install
-      - name: Start selenium-standalone
-        run: |
-          selenium-standalone start &
-          sleep 3
 
       - run: npm install -g @testim/testim-cli
       - name: Run Testim tests
@@ -46,9 +38,10 @@ jobs:
           strace -Ttt -f -o traces/testim.strace testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
-            --host 127.0.0.1 \
-            --port 4444 \
+            --chrome-binary-location /usr/bin/google-chrome \
+            --use-local-chrome-driver \
             --mode selenium \
+            --headless \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
