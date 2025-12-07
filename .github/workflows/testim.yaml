@@ -44,8 +44,9 @@ jobs:
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
             --use-local-chrome-driver \
+            --use-chrome-launcher \
             --headless \
-            --mode selenium \
+            --mode extension \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
@@ -53,3 +54,4 @@ jobs:
         env:
           TESTIM_TOKEN: ${{ secrets.TESTIM_TOKEN }}
           TESTIM_PROJECT: ${{ secrets.TESTIM_PROJECT }}
+          CHROME_PATH: ${{ steps.setup_chrome.outputs.chrome-path }}
