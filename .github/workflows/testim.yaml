@@ -52,9 +52,10 @@ jobs:
           strace -Ttt -f -o traces/testim.strace testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
-            --use-local-chrome-driver \
+            --chrome-binary-location "${{ steps.setup_chrome.outputs.chrome-path }}" \
+            --use-chrome-launcher \
             --headless \
-            --mode selenium \
+            --mode extension \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
