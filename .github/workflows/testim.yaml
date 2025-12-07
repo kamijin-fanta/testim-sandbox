@@ -30,6 +30,8 @@ jobs:
           chrome-version: stable
           install-dependencies: true
           install-chromedriver: true
+      - name: Add Chrome path
+        run: echo "${{ steps.setup_chrome.outputs.chrome-path }}" >> $GITHUB_PATH
 
       - uses: actions/setup-node@v4
         with:
@@ -44,7 +46,6 @@ jobs:
             --use-local-chrome-driver \
             --headless \
             --mode selenium \
-            --chrome-binary-location "${{ steps.setup_chrome.outputs.chrome-path }}" \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
