@@ -33,12 +33,6 @@ jobs:
           chrome-version: stable
           install-dependencies: true
           install-chromedriver: true
-      - name: Check raw Chrome headless
-        run: |
-          xvfb-run -a "${{ steps.setup_chrome.outputs.chrome-path }}" \
-            --disable-gpu \
-            --no-sandbox \
-            https://example.com || echo "chrome exited with $?"
 
       - name: Add to path
         run: |
