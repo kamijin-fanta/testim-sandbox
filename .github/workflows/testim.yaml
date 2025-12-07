@@ -23,21 +23,30 @@ jobs:
           sleep 5
         shell: bash
 
+      - name: Setup Chrome and ChromeDriver
+        uses: browser-actions/setup-chrome@v2
+        with:
+          chrome-version: stable
+          install-dependencies: true
+          install-chromedriver: true
+
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
       - run: npm install -g @testim/testim-cli
-      - run: |
+      - name: Run Testim tests
+        run: |
+          mkdir -p test-results
           testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
-            --grid "Testim-Grid" \
-            --mode "extension" \
+            --use-local-chrome-driver \
+            --headless \
+            --mode selenium \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
-            --tunnel \
-            --tunnel-port 8000 \
-            --base-url "http://127.0.0.1:8000/admin/"
+            --base-url "http://127.0.0.1:8000/admin/" \
+            --report-file test-results/testim-report.xml
         env:
           TESTIM_TOKEN: ${{ secrets.TESTIM_TOKEN }}
           TESTIM_PROJECT: ${{ secrets.TESTIM_PROJECT }}
