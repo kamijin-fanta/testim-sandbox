@@ -24,6 +24,7 @@ jobs:
         shell: bash
 
       - name: Setup Chrome and ChromeDriver
+        id: setup_chrome
         uses: browser-actions/setup-chrome@v2
         with:
           chrome-version: stable
@@ -43,6 +44,7 @@ jobs:
             --use-local-chrome-driver \
             --headless \
             --mode selenium \
+            --chrome-binary-location "${{ steps.setup_chrome.outputs.chrome-path }}" \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
