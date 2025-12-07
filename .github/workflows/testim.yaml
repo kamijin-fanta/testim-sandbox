@@ -45,6 +45,7 @@ jobs:
           strace -Ttt -f -o traces/testim.strace testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
+            --host 127.0.0.1 \
             --port 4444 \
             --mode selenium \
             --branch "$BRANCH_NAME" \
