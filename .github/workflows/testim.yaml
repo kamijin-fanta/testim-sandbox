@@ -32,6 +32,9 @@ jobs:
           install-chromedriver: true
       - name: Add Chrome path
         run: echo `dirname "${{ steps.setup_chrome.outputs.chrome-path }}"` >> $GITHUB_PATH
+
+      - run: ls -al /opt/google/chrome/chrome
+
       - name: Install strace
         run: sudo apt-get update && sudo apt-get install -y strace
       - uses: actions/setup-node@v4
