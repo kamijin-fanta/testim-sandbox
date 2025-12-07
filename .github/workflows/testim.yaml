@@ -32,10 +32,11 @@ jobs:
       - name: Install selenium-standalone
         run: |
           npm install -g selenium-standalone
-          selenium-standalone install --singleDriverInstall=chrome
+          selenium-standalone install
       - name: Start selenium-standalone
         run: |
-          selenium-standalone start --singleDriver=chrome &
+          selenium-standalone start &
+          sleep 3
 
       - run: npm install -g @testim/testim-cli
       - name: Run Testim tests
