@@ -30,6 +30,14 @@ jobs:
           chrome-version: stable
           install-dependencies: true
           install-chromedriver: true
+      - name: Check raw Chrome headless
+        run: |
+          "${{ steps.setup_chrome.outputs.chrome-path }}" \
+            --headless \
+            --disable-gpu \
+            --no-sandbox \
+            https://example.com || echo "chrome exited with $?"
+
       - name: Add to path
         run: |
           echo `dirname "${{ steps.setup_chrome.outputs.chrome-path }}"` >> $GITHUB_PATH
