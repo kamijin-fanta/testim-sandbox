@@ -1,0 +1,43 @@
+name: Testim E2E
+on: [push]
+
+jobs:
+  run-testimio-cli:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: install uv
+        run: pip install uv --user
+        shell: bash
+      - name: Set up Python
+        run: uv python install
+        shell: bash
+      - name: Install python dependencies by uv
+        run: uv sync
+        shell: bash
+        working-directory: ${{ inputs.working-directory }}
+      - name: Django setup
+        run: |
+          uv run python manage.py migrate
+          uv run python manage.py runserver &
+          sleep 5
+        shell: bash
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "lts"
+      - run: npm install -g @testim/testim-cli
+      - run: |
+          testim \
+            --token "$TESTIM_TOKEN" \
+            --project "$TESTIM_PROJECT" \
+            --grid "Testim-Grid" \
+            --mode "extension" \
+            --branch "$BRANCH_NAME" \
+            --suite "Django TODO Apps" \
+            --tunnel \
+            --tunnel-port 8000 \
+            --base-url "http://127.0.0.1:8000/admin/"
+        env:
+          TESTIM_TOKEN: ${{ secrets.TESTIM_TOKEN }}
+          TESTIM_PROJECT: ${{ secrets.TESTIM_PROJECT }}
