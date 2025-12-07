@@ -23,6 +23,9 @@ jobs:
           sleep 5
         shell: bash
 
+      - name: Install strace
+        run: sudo apt-get update && sudo apt-get install -y strace xvfb
+
       - name: Setup Chrome and ChromeDriver
         id: setup_chrome
         uses: browser-actions/setup-chrome@v2
@@ -32,8 +35,7 @@ jobs:
           install-chromedriver: true
       - name: Check raw Chrome headless
         run: |
-          "${{ steps.setup_chrome.outputs.chrome-path }}" \
-            --headless \
+          xvfb-run -a "${{ steps.setup_chrome.outputs.chrome-path }}" \
             --disable-gpu \
             --no-sandbox \
             https://example.com || echo "chrome exited with $?"
@@ -47,8 +49,6 @@ jobs:
 
       - run: ls -al /opt/google/chrome/chrome
 
-      - name: Install strace
-        run: sudo apt-get update && sudo apt-get install -y strace
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
@@ -57,12 +57,11 @@ jobs:
         run: |
           mkdir -p test-results
           mkdir -p traces
-          strace -Ttt -f -o traces/testim.strace testim \
+          xvfb-run -a strace -Ttt -f -o traces/testim.strace testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
             --chrome-binary-location "${{ steps.setup_chrome.outputs.chrome-path }}" \
             --use-chrome-launcher \
-            --headless \
             --mode extension \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
