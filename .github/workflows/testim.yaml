@@ -46,9 +46,8 @@ jobs:
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
             --use-local-chrome-driver \
-            --use-chrome-launcher \
             --headless \
-            --mode extension \
+            --mode selenium \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
