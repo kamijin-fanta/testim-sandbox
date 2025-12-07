@@ -33,7 +33,6 @@ jobs:
       - name: Install chromedriver
         run: |
           npm install -g chromedriver
-          # グローバル node_modules から chromedriver の bin ディレクトリを PATH に追加
           CHROME_NPM_ROOT="$(npm root -g)"
           echo "$CHROME_NPM_ROOT/chromedriver/bin" >> "$GITHUB_PATH"
       - name: Check chromedriver
@@ -46,7 +45,7 @@ jobs:
         run: |
           mkdir -p test-results
           mkdir -p traces
-          strace -Ttt -f -o traces/testim.strace testim \
+          strace -Ttt -f  -s 0 -o traces/testim.strace -e trace=execve testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
             --chrome-binary-location /usr/bin/google-chrome \
