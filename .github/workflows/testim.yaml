@@ -26,37 +26,27 @@ jobs:
       - name: Install strace
         run: sudo apt-get update && sudo apt-get install -y strace xvfb
 
-      - name: Setup Chrome and ChromeDriver
-        id: setup_chrome
-        uses: browser-actions/setup-chrome@v2
-        with:
-          chrome-version: stable
-          install-dependencies: true
-          install-chromedriver: true
-
-      - name: Add to path
-        run: |
-          echo `dirname "${{ steps.setup_chrome.outputs.chrome-path }}"` >> $GITHUB_PATH
-          echo `dirname "${{ steps.setup_chrome.outputs.chromedriver-path }}"` >> $GITHUB_PATH
-      - name: Show paths
-        run: echo $PATH
-
-      - run: ls -al /opt/google/chrome/chrome
-
       - uses: actions/setup-node@v4
         with:
           node-version: "24"
+      - name: Install selenium-standalone
+        run: |
+          npm install -g selenium-standalone
+          selenium-standalone install --singleDriverInstall=chrome
+      - name: Start selenium-standalone
+        run: |
+          selenium-standalone start --singleDriver=chrome &
+
       - run: npm install -g @testim/testim-cli
       - name: Run Testim tests
         run: |
           mkdir -p test-results
           mkdir -p traces
-          xvfb-run -a strace -Ttt -f -o traces/testim.strace testim \
+          strace -Ttt -f -o traces/testim.strace testim \
             --token "$TESTIM_TOKEN" \
             --project "$TESTIM_PROJECT" \
-            --chrome-binary-location "${{ steps.setup_chrome.outputs.chrome-path }}" \
-            --use-chrome-launcher \
-            --mode extension \
+            --port 4444 \
+            --mode selenium \
             --branch "$BRANCH_NAME" \
             --suite "Django TODO Apps" \
             --base-url "http://127.0.0.1:8000/admin/" \
